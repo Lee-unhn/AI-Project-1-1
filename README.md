@@ -1,41 +1,50 @@
-# Rock Paper Scissors - AI Game
+# Rock Paper Scissors — AI 對戰遊戲練習
 
-## 專案總覽
+> 用 TensorFlow/Keras + CustomTkinter 練習：攝影機辨識玩家剪刀石頭布手勢，與 AI 對戰。
 
-這是一個使用 Python 開發的桌面遊戲，您可以透過電腦攝影機即時出拳（剪刀、石頭、布），與 AI 進行一場有趣的對決。專案結合了電腦視覺、遊戲邏輯和現代化的圖形使用者介面。
+**Author**: [@Lee-unhn](https://github.com/Lee-unhn) · a2264563@gmail.com  
+**Status**: 學習專案 / Learning Project
 
----
+## 專案簡介
 
-## 專案架構
+使用 Python 開發的桌面遊戲，透過電腦攝影機即時出拳（剪刀、石頭、布）與 AI 對決。本專案是電腦視覺、遊戲邏輯與 GUI 整合的模組化練習，採用「UI / 遊戲邏輯 / 攝影機 / 模型」分層架構：
 
-本專案採用模組化設計，將不同功能清晰地分離到各自的資料夾中：
+- **即時手勢辨識**：攝影機即時擷取 + Keras 模型推論
+- **隨機 AI 對手**：簡單的隨機出拳邏輯
+- **CustomTkinter UI**：現代化深色主題介面
+- **遊戲流程控制**：辨識到有效出拳 → 冷卻展示結果 → 自動準備下一回合
+- **計分**：分數追蹤 + 手動重置
 
-*   **UI (`ui/`)**:
-    *   使用 `CustomTkinter` 框架建立，是整個應用程式的進入點和使用者互動介面。
-*   **遊戲邏輯 (`game_logic/`)**:
-    *   包含一個獨立的 `RPSGame` 類別，負責處理遊戲的核心規則，如勝負判斷、分數計算以及 AI 的隨機出拳。
-*   **攝影機工具 (`camera_utils/`)**:
-    *   提供一個可重用的 `CameraStream` 類別，專門用於管理攝影機的初始化、影像擷取和資源釋放。
-*   **模型 (`models/`)**:
-    *   存放用於手勢辨識的 TensorFlow/Keras 模型檔案。
+## 架構
 
----
+```mermaid
+flowchart LR
+    A[攝影機 CameraStream] --> B[OpenCV 影像]
+    B --> C[TensorFlow/Keras 手勢模型]
+    C --> D[玩家出拳]
+    E[RPSGame 隨機 AI 出拳] --> F[勝負判定]
+    D --> F
+    F --> G[CustomTkinter UI 顯示]
+    G --> H[分數計算]
+```
 
-## 主要功能
+## 技術棧
 
-*   **即時手勢辨識**: 透過攝影機即時捕捉並辨識您的「剪刀」、「石頭」、「布」手勢。
-*   **隨機 AI 對手**: 一個簡單的 AI 會隨機出拳與您對戰。
-*   **現代化 UI**: 使用 CustomTkinter 打造美觀、直觀的使用者介面。
-*   **即時遊戲回饋**:
-    *   介面會顯示攝影機畫面、您當前的出拳、AI 的出拳。
-    *   每一局的勝負結果會清晰地顯示在畫面上方。
-*   **遊戲流程控制**:
-    *   辨識到有效出拳後，會有短暫的冷卻時間來展示結果，然後自動準備下一回合。
-    *   提供分數追蹤和手動重置分數的功能。
+- Python 3.8+
+- TensorFlow / Keras（`models/converted_keras/saved_model.pb`）
+- OpenCV（攝影機與影像）
+- CustomTkinter（GUI）
+- Pillow、NumPy
 
----
+## 主要檔案
 
-## 環境設置與執行
+- `ui/app.py` — UI 進入點
+- `game_logic/rps_game.py` — `RPSGame` 類別（勝負規則、分數、AI 隨機出拳）
+- `camera_utils/camera_stream.py` — `CameraStream` 類別（攝影機初始化、擷取、釋放）
+- `models/converted_keras/` — TensorFlow SavedModel + labels
+- `requirements.txt`
+
+## 使用 / Usage
 
 ### 1. 前置條件
 *   Python 3.8 或更高版本。
@@ -66,11 +75,14 @@ pip install -r requirements.txt
 python ui/app.py
 ```
 
-## 遊戲玩法
-
+### 遊戲玩法
 1.  程式啟動後，將您的手放在攝影機前。
 2.  做出「剪刀」、「石頭」或「布」的手勢。
 3.  應用程式會在辨識到您的手勢（且可信度足夠高）後，觸發一局對戰。
 4.  AI 會同時出拳，畫面會顯示您和 AI 的選擇以及該局的勝負結果。
 5.  短暫延遲後，遊戲會自動重置，準備下一局。
 6.  您可以隨時點擊「重置分數」按鈕來清空計分板。
+
+## 備註
+
+本專案為 AI 視覺應用學習練習，模型路徑與部分設定可能為硬編碼。如要重現請依 README 調整。
